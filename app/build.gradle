@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
 }
 
+def keystoreProperties = [
+    storeFile: file('debug.keystore'),
+    storePassword: 'android',
+    keyAlias: 'debug',
+    keyPassword: 'android'
+]
+
 android {
     namespace 'com.sting.clipboardsender'
     compileSdk 34
@@ -14,10 +21,24 @@ android {
         versionName "1.0.0"
     }
 
+    signingConfigs {
+        debug {
+            storeFile = file('debug.keystore')
+            storePassword = 'android'
+            keyAlias = 'debug'
+            keyPassword = 'android'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
