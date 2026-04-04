@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClipboardSender</string>
+    <string name="notification_channel_id">clipboard_sender_channel</string>
+    <string name="notification_channel_name">ClipboardSender Service</string>
+    <string name="notification_title">ClipboardSender 运行中</string>
+    <string name="notification_text">HTTP服务端口 8888，收到POST请求后自动粘贴到微信</string>
+    <string name="accessibility_service_description">用于自动将剪贴板内容粘贴到微信输入框</string>
+</resources>
