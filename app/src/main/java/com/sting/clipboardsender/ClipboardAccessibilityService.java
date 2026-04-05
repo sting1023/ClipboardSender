@@ -75,58 +75,36 @@ public class ClipboardAccessibilityService extends AccessibilityService {
     }
 
     private void performPaste() {
+        Log.d(TAG, "performPaste called");
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Find the EditText input field
-                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                if (rootNode == null) {
-                    Log.w(TAG, "Root node is null");
-                    return;
+                try {
+                    // Tap the input field to activate it
+                    Runtime.getRuntime().exec("input tap 324 1352").waitFor();
+                    Log.d(TAG, "Tapped input field");
+                    
+                    // Paste from clipboard
+                    Runtime.getRuntime().exec("input keyevent 279").waitFor();
+                    Log.d(TAG, "Paste executed");
+                    
+                    // Click send button
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Runtime.getRuntime().exec("input tap 605 1356").waitFor();
+                                Log.d(TAG, "Send button tapped");
+                            } catch (Exception e) {
+                                Log.e(TAG, "Send tap failed: " + e.getMessage());
+                            }
+                        }
+                    }, 400);
+                } catch (Exception e) {
+                    Log.e(TAG, "performPaste error: " + e.getMessage());
                 }
-
-                // Find input EditText by ID
-                List<AccessibilityNodeInfo> editTexts = rootNode.findAccessibilityNodeInfosByViewId(EDIT_TEXT_ID);
-                AccessibilityNodeInfo editText = null;
-                if (editTexts != null && !editTexts.isEmpty()) {
-                    editText = editTexts.get(0);
-                }
-
-                if (editText == null) {
-                    // Try finding by class name
-                    List<AccessibilityNodeInfo> allNodes = rootNode.findAccessibilityNodeInfosByViewId(EDIT_TEXT_ID);
-                    if (allNodes == null || allNodes.isEmpty()) {
-                        Log.w(TAG, "EditText not found");
-                        return;
-                    }
-                    editText = allNodes.get(0);
-                }
-
-                // Get clipboard text
-                String clipboardText = getClipboardText();
-                if (clipboardText == null || clipboardText.isEmpty()) {
-                    Log.w(TAG, "Clipboard is empty");
-                    return;
-                }
-
-                Log.d(TAG, "Found EditText, setting text: " + clipboardText);
-
-                // Set text directly
-                Bundle args = new Bundle();
-                args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, clipboardText);
-                editText.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
-
-                // Click send button
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        clickSendButton();
-                    }
-                }, 300);
-
-                editText.recycle();
             }
-        }, 300);
+        }, 500);
     }
 
     private void clickSendButton() {
