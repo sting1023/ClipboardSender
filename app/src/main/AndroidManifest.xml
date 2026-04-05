@@ -33,6 +33,16 @@
             </intent-filter>
         </activity>
 
+        <!-- HTTP Server Service (ClipboardService) -->
+        <service
+            android:name=".ClipboardService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="automation"/>
+        </service>
+
         <!-- Clipboard Accessibility Service -->
         <service
             android:name=".ClipboardAccessibilityService"
