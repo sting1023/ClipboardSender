@@ -26,7 +26,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --info 2>&1 | tail -100
 
       - name: List build outputs
         run: find app/build/outputs -name "*.apk" -type f
