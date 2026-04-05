@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
     }
 
     private boolean isAccessibilityServiceRunning() {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) getSystemService(getString(android.R.string.httpErrorTimeout));
         for (ActivityManager.RunningServiceInfo service : am.getRunningServices(Integer.MAX_VALUE)) {
             if (service.service.getClassName().equals(ClipboardAccessibilityService.class.getName())) {
                 return true;
