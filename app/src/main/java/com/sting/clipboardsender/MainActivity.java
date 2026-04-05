@@ -1,11 +1,9 @@
 package com.sting.clipboardsender;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.accessibilityservice.AccessibilityServiceInfoCompat;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -95,27 +93,26 @@ public class MainActivity extends Activity {
         });
     }
 
-    private boolean isAccessibilityEnabled() {
-        try {
-            ComponentName name = new ComponentName(this, ClipboardAccessibilityService.class);
-            PackageManager pm = getPackageManager();
-            AccessibilityServiceInfo info = pm.getAccessibilityServiceInfo(name, PackageManager.GET_META_DATA);
-            return info != null && info.getId() != null;
-        } catch (Exception e) {
-            return false;
+    private boolean isAccessibilityServiceRunning() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : am.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().equals(ClipboardAccessibilityService.class.getName())) {
+                return true;
+            }
         }
+        return false;
     }
 
     private void updateStatus() {
-        boolean accEnabled = isAccessibilityEnabled();
-        String status = "无障碍服务: " + (accEnabled ? "✅ 已开启" : "❌ 未开启") +
+        boolean running = isAccessibilityServiceRunning();
+        String status = "无障碍服务: " + (running ? "✅ 已开启" : "❌ 未开启") +
                 "\n服务端口: 8888" +
                 "\n监听路径: POST /send";
         statusText.setText(status);
-        btnAccessibility.setAlpha(accEnabled ? 0.5f : 1.0f);
-        btnAccessibility.setEnabled(!accEnabled);
-        if (accEnabled) {
+        if (running) {
             btnAccessibility.setText("🔧 无障碍服务已开启");
+            btnAccessibility.setAlpha(0.5f);
+            btnAccessibility.setEnabled(false);
         }
     }
 
