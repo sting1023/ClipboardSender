@@ -1,12 +1,14 @@
 package com.sting.clipboardsender;
 
 import android.app.Notification;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipboardManager;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -20,7 +22,7 @@ public class ClipboardService extends Service {
     private static final String CHANNEL_ID = "clipboard_sender_channel";
 
     private static volatile boolean isRunning = false;
-    private ClipboardManager clipboardManager;
+    private static final String PENDING_FILE = "pending_text.txt";
     private HttpServer httpServer;
 
     public static boolean isRunning() {
@@ -28,11 +30,14 @@ public class ClipboardService extends Service {
     }
 
     public static void setClipboardText(Context context, String text) {
-        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (cm != null) {
-            ClipData clip = ClipData.newPlainText("ClipboardSender", text);
-            cm.setPrimaryClip(clip);
-            Log.d(TAG, "Clipboard set: " + text);
+        try {
+            File file = new File(context.getFilesDir(), PENDING_FILE);
+            FileOutputStream fos = context.openFileOutput(PENDING_FILE, Context.MODE_PRIVATE);
+            fos.write(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            fos.close();
+            Log.d(TAG, "Pending text written to file: " + text);
+        } catch (Exception e) {
+            Log.e(TAG, "Error writing to file", e);
         }
     }
 
@@ -52,7 +57,7 @@ public class ClipboardService extends Service {
         createNotificationChannel();
         startForeground(1, createNotification());
 
-        clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
 
         // Start HTTP server in background thread
         httpServer = new HttpServer(PORT, this);
