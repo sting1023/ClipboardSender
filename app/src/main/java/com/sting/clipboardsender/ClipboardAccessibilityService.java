@@ -81,11 +81,11 @@ public class ClipboardAccessibilityService extends AccessibilityService {
             public void run() {
                 try {
                     // Tap the input field to activate it
-                    Runtime.getRuntime().exec("input tap 324 1352").waitFor();
+                    Runtime.getRuntime().exec("/system/bin/input tap 324 1352").waitFor();
                     Log.d(TAG, "Tapped input field");
                     
                     // Paste from clipboard
-                    Runtime.getRuntime().exec("input keyevent 279").waitFor();
+                    Runtime.getRuntime().exec("/system/bin/input keyevent 279").waitFor();
                     Log.d(TAG, "Paste executed");
                     
                     // Click send button
@@ -93,7 +93,7 @@ public class ClipboardAccessibilityService extends AccessibilityService {
                         @Override
                         public void run() {
                             try {
-                                Runtime.getRuntime().exec("input tap 605 1356").waitFor();
+                                Runtime.getRuntime().exec("/system/bin/input tap 605 1356").waitFor();
                                 Log.d(TAG, "Send button tapped");
                             } catch (Exception e) {
                                 Log.e(TAG, "Send tap failed: " + e.getMessage());
