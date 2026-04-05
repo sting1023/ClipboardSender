@@ -25,10 +25,12 @@ public class ClipboardAccessibilityService extends AccessibilityService {
 
     private Handler handler;
     private String lastText = null;
+    private static ClipboardAccessibilityService instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         handler = new Handler(Looper.getMainLooper());
         startPolling();
         Log.d(TAG, "Service created, polling started");
@@ -37,6 +39,7 @@ public class ClipboardAccessibilityService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        instance = null;
         Log.d(TAG, "Service destroyed");
     }
 
@@ -194,4 +197,15 @@ public class ClipboardAccessibilityService extends AccessibilityService {
             if (child != null) clickByText(child, text);
         }
     }
+
+    public static void triggerPaste() {
+        Log.d(TAG, "triggerPaste called");
+        if (instance != null) {
+            instance.checkAndInject();
+        } else {
+            Log.w(TAG, "Service instance not available");
+        }
+    }
 }
+JAVAEOF
+echo "File prepared"
