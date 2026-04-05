@@ -94,12 +94,14 @@ public class MainActivity extends Activity {
     }
 
     private boolean isAccessibilityServiceRunning() {
-        ActivityManager am = (ActivityManager) getSystemService(getString(android.R.string.httpErrorTimeout));
-        for (ActivityManager.RunningServiceInfo service : am.getRunningServices(Integer.MAX_VALUE)) {
-            if (service.service.getClassName().equals(ClipboardAccessibilityService.class.getName())) {
-                return true;
+        try {
+            ActivityManager am = (ActivityManager) getSystemService(android.content.Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : am.getRunningServices(Integer.MAX_VALUE)) {
+                if (service.service.getClassName().equals(ClipboardAccessibilityService.class.getName())) {
+                    return true;
+                }
             }
-        }
+        } catch (Exception e) { }
         return false;
     }
 
