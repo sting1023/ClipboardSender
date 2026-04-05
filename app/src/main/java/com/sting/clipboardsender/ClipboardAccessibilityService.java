@@ -207,5 +207,3 @@ public class ClipboardAccessibilityService extends AccessibilityService {
         }
     }
 }
-JAVAEOF
-echo "File prepared"
